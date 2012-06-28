@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd">
-<!-- $Id: draft-ietf-opsec-filter-caps-08.xml,v 1.5 2007/07/05 19:15:33 morrowc Exp morrowc $ -->
+<!-- $Id: draft-ietf-opsec-filter-caps-10.xml,v 1.5 2012/06/28 19:15:33 morrowc Exp morrowc $ -->
 
 <?rfc toc="yes"?>
 <?rfc symrefs="yes" ?>
 <?rfc sortrefs="yes"?>
 
-<rfc ipr="full3978" category="bcp" docName="draft-ietf-opsec-filter-caps-09">
+<rfc ipr="full3978" category="bcp" docName="draft-ietf-opsec-filter-caps-10">
   <front>
     <title abbrev="Filtering Capabilities">
 Filtering and Rate Limiting Capabilities for IP Network Infrastructure</title>
     <author initials="C.L.M." surname="Morrow" fullname="Christopher L. Morrow">
-      <organization>UUNET Technologies</organization>
+      <organization>Google, Inc.</organization>
       <address>
 	<postal>
-	  <street>21830 UUNet Way</street>
-	  <city>Ashburn</city> <region>Virginia</region> <code>21047</code>
+	  <street>1600 Ampitheatre Parkway</street>
+	  <city>Mountain View</city> <region>California</region> <code>94043</code>
 	  <country>U.S.A.</country>
 	</postal>
-	<phone>+1 703 886 3823</phone>
-	<email>chris@uu.net</email>
+	<phone>+1 202 370 5617</phone>
+	<email>morrowc@google.com</email>
       </address>
     </author>
     
@@ -51,7 +51,7 @@ Filtering and Rate Limiting Capabilities for IP Network Infrastructure</title>
     </author>
 
     
-    <date month="July" year="2007" day="5" />
+    <date month="June" year="2012" day="28" />
     <area>Operations</area>
     <area>Security</area>
     <workgroup>None.</workgroup>
