@@ -1,0 +1,1200 @@
+<?xml version="1.0"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<!-- $Id: draft-ietf-opsec-filter-caps-08.xml,v 1.5 2007/07/05 19:15:33 morrowc Exp morrowc $ -->
+
+<?rfc toc="yes"?>
+<?rfc symrefs="yes" ?>
+<?rfc sortrefs="yes"?>
+
+<rfc ipr="full3978" category="bcp" docName="draft-ietf-opsec-filter-caps-09">
+  <front>
+    <title abbrev="Filtering Capabilities">
+Filtering and Rate Limiting Capabilities for IP Network Infrastructure</title>
+    <author initials="C.L.M." surname="Morrow" fullname="Christopher L. Morrow">
+      <organization>UUNET Technologies</organization>
+      <address>
+	<postal>
+	  <street>21830 UUNet Way</street>
+	  <city>Ashburn</city> <region>Virginia</region> <code>21047</code>
+	  <country>U.S.A.</country>
+	</postal>
+	<phone>+1 703 886 3823</phone>
+	<email>chris@uu.net</email>
+      </address>
+    </author>
+    
+    <author initials="G.M." surname="Jones" fullname="George M. Jones">
+      <organization>Port111 Labs</organization>
+      <address>
+<!--	<postal>
+	  <street>7515 Colshire Drive, M/S WEST</street>
+	  <city>McLean</city> <region>Virginia</region> <code>22102-7508</code>
+	  <country>U.S.A.</country>
+	</postal>
+	-->
+	<phone>+1 703 488 9740</phone>
+	<email>gmj3871@pobox.com</email>
+      </address>
+    </author>
+
+    <author initials="V.M." surname="Manral" fullname="Vishwas Manral">
+      <organization>IP Infusion</organization>
+      <address>
+	<postal>
+	  <street>Ground Floor, 5th Cross Road, Off 8th Main Road</street>
+	  <city>Bangalore</city> <region></region> <code>52</code>
+	  <country>India</country>
+	</postal>
+	<phone>+91-80-4113-1268</phone>
+	<email>vishwas@ipinfusion.com</email>
+      </address>
+    </author>
+
+    
+    <date month="July" year="2007" day="5" />
+    <area>Operations</area>
+    <area>Security</area>
+    <workgroup>None.</workgroup>
+    <keyword>RFC</keyword>
+    <keyword>Request for Comments</keyword>
+    <keyword>I-D</keyword>
+    <keyword>Internet-Draft</keyword>
+    <keyword>Security</keyword>
+    <keyword>Requirements</keyword>
+    <keyword>Capabilities</keyword>
+    <keyword>Features</keyword>
+    <abstract><t>
+
+<t>
+<t>
+<xref target="RFC4778"/>
+lists operator practices related to securing networks.
+This document lists filtering and rate limiting capabilities needed to support those practices.
+Capabilities are limited to filtering and rate limiting packets as
+they enter or leave the device.  Route filters and service specific
+filters (e.g. SNMP, telnet) are not addressed.
+</t>
+      
+      <t>
+Capabilities are defined without reference to specific technologies.
+This is done to leave room for deployment of new technologies that implement 
+the capability.  Each capability cites the practices it supports.
+Current implementations that support the capability are cited.
+Special considerations are discussed as appropriate listing operational 
+and resource constraints, limitations of current implementations, trade-offs, etc.
+</t>
+      
+    </t>
+      
+    </t>
+    </abstract>
+  </front>
+  <middle>
+    
+    <section title="Introduction">
+      
+      <t>
+This document is defined in the context of <xref target="RFC4778"/>.
+<xref target="RFC4778"/> defines the goals, motivation, scope, definitions, intended audience, threat model, potential attacks and gives justifications for each of the practices. 
+Many of the capabilities listed here refine or add to capabilities listed in 
+<xref target="RFC3871"/>.
+</t>
+
+<t>
+Also see <xref target="I-D.lewis-infrastructure-security"/> for a useful description of 
+techniques for protecting infrastructure devices, including the use of filtering.
+</t>
+      
+      <section title="Threat Model" >
+	<t>
+
+Threats in today's networked environment range from simple packet
+floods with overwhelming bandwidth toward a leaf network to subtle
+attacks aimed at subverting known vulnerabilities in existing
+applications. 
+The target of the attack may be the networking device or links inside
+the provider core.
+
+</t>
+	<t>
+
+Networks must have the ability to mitigate attacks in order to limit
+these threats. These mitigation steps could include routing updates,
+traffic filters, and routing filters. It is possible that the
+mitigation steps might have to affect transit traffic as well as
+traffic destined to the device on which the mitigation steps are
+activated.
+
+</t>
+	<t>
+The scope of the threat includes simply denying services to an individual customer on one side of the scale to exploiting a newly discovered protocol vulnerability which affects the entire provider core. The obvious risk to the business requires mitigation capabilities which can span this range of threats.
+</t>
+<t>
+Also see <xref target="I-D.savola-rtgwg-backbone-attacks"/> for a list of attacks on
+backbone devices and counter measures.
+</t>
+</section>
+<section title="Definitions" >
+
+<t>
+Terms are used as defined in <xref target="RFC2828"/>.
+The following definitions are intended to add clarification
+specific the context and threat model assumed in this document.
+</t>
+
+	<t>
+Threat: An indication of impending danger or harm to the network or its parts. This could be formed from the projected loss of revenue to the business. Additionally, it could be formed from the increased cost to the business caused by the event.  The increased costs could come from the need for more interfaces, more bandwidth, more personnel to support the increased size or complexity, etc.
+</t>
+	<t>
+Risk: The possibility of suffering harm or loss of network services due to a threat. 
+</t>
+	<t>
+Attack: Typically this is a form of flood of packets to or through a network. This could also be a much smaller stream of packets created with the intent of exploiting a vulnerability in the infrastructure of the network.
+</t>
+	<t>
+Asset: Either a customer, network device or network link. Any of these could be assets from a business perspective.
+</t>
+
+
+
+      </section>
+      
+
+      
+      <section title="Format" >
+	
+	<t>
+Each capability has the following subsections:</t>
+	<list style="symbols">
+	  <t>Capability (what)</t>
+	  <t>Supported Practices (why)</t>
+	  <t>Current Implementations (how)</t>
+	  <t>Considerations (caveats, resource issues, protocol issues, etc.)</t>
+	</list>
+	
+	<t>
+The Capability section describes a feature to be supported by the device.
+The Supported Practice section cites practices described in <xref target="RFC4778"/>
+that are supported by this capability.
+The Current Implementation section is intended to give examples of implementations
+of the capability, citing technology and standards
+current at the time of writing.
+It is expected that the choice
+of features to implement the capabilities will change over time.
+The Considerations section lists operational and resource constraints,
+limitations of current implementations, trade-offs, etc.
+</t>
+	
+	
+      </section>
+      
+      -->
+      
+    </section>
+
+
+    <section title="Traffic Types, Rules and Filters" anchor="Req.Functional-filter-managementplane">
+
+<t>
+This document describes capabilities that enable routers to filter transit,
+control and management traffic.
+</t>
+
+<t>
+Transit traffic is traffic that passes through a router, but does not
+otherwise impact the behavior of that router. Routers filter transit
+traffic by applying "filters" to interfaces. For any given interface, a
+filter can be applied to inbound traffic, outbound traffic or both.
+</t>
+
+<t>
+Control and management traffic either originates on the router or is
+destined for the router. Routers filter control and management traffic
+by applying one or more filters to all of their interfaces, as an
+aggregate. Aggregation permits the router to select any control packet,
+regardless of the interface upon which it arrives. So, the router can
+enforce a filter like the one that follows: "The router will accept only
+1mbps of telnet traffic, regardless of the interface(s) upon which that
+traffic arrives."
+</t>
+
+<t>
+A "Filter" is a list of one or more rules that may be applied as a group.
+</t>
+
+<t>
+A rule consists of the following:
+</t>
+
+<list style="symbols">
+ <t>selection criteria</t>
+ <t>actions</t>
+</list>       
+
+<t>
+Selection criteria identify the packets that will be impacted by this
+rule. <xref target="Req.Selection"/> of this document describes selection criteria in detail.
+</t>
+
+<t>
+Actions define treatment that will be afforded to packets meeting the
+selection criteria. An action can include the following:
+</t>
+
+<list style="symbols">
+  <t>forwarding treatment</t>
+  <t>logging treatment</t>
+  <t>accounting treatment</t>
+</list>       
+
+<t>
+Forwarding behaviors include the following:
+</t>
+
+<list style="symbols">
+  <t>accept</t>
+  <t>accept but rate limit</t>
+  <t>reject (discard and emit ICMP message)</t>
+  <t>silently discard</t>
+</list>       
+
+<t>
+<xref target="Req.Actions"/> describes actions in detail.
+<xref target="Req.Counters"/> describes counter actions in detail.
+</t>
+
+
+
+
+<!-- -->
+<!--      <t> -->
+<!--      In this document <xref target="Req.Selection"/> describes a number of criteria -->
+<!--      for performing packet selection.  It is assumed in this document that  -->
+<!-- -->
+<!-- -->
+<!--        <list style="symbols"> -->
+<!--	  <t>all of these criteria can be used to select packets for both filtering and rate limiting packets,</t> -->
+<!-- -->
+<!--	  <t>management plane controls can be implemented by applying these -->
+<!--	 	criteria to filter/rate limit traffic destined for the device itself,</t> -->
+<!-- -->
+<!--	  <t>data plane controls can be implemented by applying these -->
+<!--	 	criteria to filter/rate limit traffic destined through the device</t> -->
+<!-- -->
+<!--	  <t>multiple packet selection criteria can be used to -->
+<!--	        select a single set of packets for filtering action</t> -->
+<!--	</list> -->
+<!-- -->
+<!--      </t> -->
+
+    </section>
+    
+    <!--                          -->
+    <!-- START with new structure -->
+    <!--                          -->
+    
+    <!-- TOP -->
+    
+    <!-- START MANAGEMENT PLANE -->
+    <section title="Packet Selection Criteria" anchor="Req.Selection">
+      <t>
+
+This section lists packet selection criteria that can be applied
+to both filtering and rate limiting.
+</t>
+      <section title="Select Traffic on ANY Interface" anchor="Req.Filtering_to_cap-1">
+	<t>
+	  <list style="hanging">
+	    <t hangText="Capability.">
+	     <vspace blankLines="1" />
+		 The device provides a means to select IP packets on any individual interface
+		  implementing IP.
+	     </t>	  	    
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+
+	      <t>Security Practices for Device Management (<xref target="RFC4778" />, Section 2.2.2)</t>
+	      <t>Security Practices for Data Path (<xref target="RFC4778"/>, Section 2.3.2)</t>
+	      <t>Security Practices for Software Upgrades and Configuration Integrity/Validation (<xref target="RFC4778"/>, Section 2.5.2)</t>
+	      <t>Data Plane Filtering (<xref target="RFC4778" />, Section 2.7.1)</t>
+	      <t>Management Plane Filtering (<xref target="RFC4778" />, Section 2.7.2)</t>
+	      <t>Profile Current Traffic (<xref target="Ops.Profile"/>)</t>
+	      <t>Block Malicious Packets (<xref target="Ops.BlockPackets" />)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+              Many devices currently implement access control lists or filters
+	      that allow filtering based on protocol and/or source/destination
+	      address and/or source/destination port and allow these filters
+	      to be applied to interfaces.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+              This allows implementation of policies such as "Allow no more than 1Mb/s of ingress ICMP traffic on interface FOO".
+	</t>
+	</list>
+	</t>
+	</section>
+
+
+      <section title="Select Traffic on ALL Interfaces" anchor="Req.Filtering_to_cap-1b">
+	<t>
+	  <list style="hanging">
+	    <t hangText="Capability.">
+	     <vspace blankLines="1" />
+		 The device provides a means to select IP packets on any interface
+		  implementing IP.  The mechanism should support a shorthand notation
+		  representing all interfaces on the router.
+	     </t>	  	    
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+
+	      <t>Security Practices for Device Management (<xref target="RFC4778" />, Section 2.2.2)</t>
+	      <t>Security Practices for Data Path (<xref target="RFC4778"/>, Section 2.3.2)</t>
+	      <t>Security Practices for Software Upgrades and Configuration Integrity/Validation (<xref target="RFC4778"/>, Section 2.5.2)</t>
+	      <t>Data Plane Filtering (<xref target="RFC4778" />, Section 2.7.1)</t>
+	      <t>Management Plane Filtering (<xref target="RFC4778" />, Section 2.7.2)</t>
+	      <t>Profile Current Traffic (<xref target="Ops.Profile"/>)</t>
+	      <t>Block Malicious Packets (<xref target="Ops.BlockPackets" />)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+              Many devices currently implement access control lists or filters that allow 
+    	      filtering based on protocol and/or source/destination address and/or 
+    	      source/destination port and allow these filters to be applied to all interfaces.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+              This allows implementation of policies such as "Allow no more than 1Mb/s of ingress ICMP traffic combined on all interfaces on the device".
+	</t>
+	</list>
+	</t>
+	</section>
+
+	<section title="Select Traffic To the Device" anchor="Req.Filtering_to_cap-2">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+
+
+  	    It is possible to select traffic
+  	    that is addressed directly to the device via any of its interfaces
+  	    - including loopback interfaces.  The mechanism should
+            support a shorthand notation representing all interfaces on that router.
+
+	</t>
+          <t hangText="Supported Practices.">
+            <list style="symbols">
+	    <t>Security Practices for Device Management (<xref target="RFC4778" />, Section 2.2.2)</t>
+	    <t>Security Practices for Software Upgrades and Configuration Integrity/Validation (<xref target="RFC4778" />, Section 2.5.2)</t>
+	    
+	      <t>Management Plane Filtering (<xref target="RFC4778" />, Section 2.7.2)</t>
+	      </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+              Many devices currently implement access control lists or filters that allow 
+  	    filtering based on protocol and/or source/destination address and/or 
+  	    source/destination port and allow these filters to be applied to services offered
+  	    by the device.
+	</t>
+	  <t>
+  	    Examples of this might include filters that permit only BGP from
+  	    peers and SNMP and SSH from an authorized management segment and
+  	    directed to the device itself, while dropping all other traffic
+  	    addressed to the device.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+              None.
+	</t>
+	</list>
+	</t>
+	</section>
+
+	<section title="Select Transit Traffic" anchor="Req.Filtering_to_cap-2a">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+
+  	    It is possible to select traffic
+  	    that will transit the device via any of its interfaces.
+            The mechanism should support a shorthand notation representing
+	    traffic not addressed to any of the routers interfaces.
+
+	</t>
+          <t hangText="Supported Practices.">
+            <list style="symbols">
+	    <t>Security Practices for Data Path (<xref target="RFC4778" />, Section 2.3.2)</t> 
+	      <t>Data Plane Filtering (<xref target="RFC4778" />, Section 2.7.1)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+              Many devices currently implement access control lists or filters that allow 
+  	    filtering based on protocol and/or source/destination address and/or 
+  	    source/destination port and allow these filters to be applied to the interfaces
+	    on the device in order to protect assets attached to the network.
+	     <vspace blankLines="1" />
+  	    Examples of this may include filtering all traffic save SMTP (tcp/25) destined to 
+	    a mail server. A common use of this today would also be denying all traffic 
+	    to a destination which has been determined to be hostile.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+   		This allows the operator to apply filters that protect the networks
+   		and assets surrounding the device from attacks and unauthorized
+   		access.
+	</t>
+	</list>
+	</t>
+	</section>
+	<section title="Select Inbound and/or Outbound" anchor="Req.Filter_to_cap-10">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+             It is possible to select both incoming and outgoing traffic
+             on any interface.
+	</t>
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+	      <!-- Reference below -->
+	      <t>Security Practices for Device Management (<xref target="RFC4778" />, Section 2.2.2) </t>
+	      <t>Security Practices for Data Path (<xref target="RFC4778" />, Section 2.3.2) </t>
+	      <t>Security Practices for Software Upgrades and Configuration Integrity/Validation (<xref target="RFC4778" />, Section 2.5.2)</t>
+	      <t>Data Plane Filtering (<xref target="RFC4778" />, Section 2.7.1)</t>
+	      <t>Management Plane Filtering (<xref target="RFC4778" />, Section 2.7.2)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+  	      It might be desirable on a border router, for example, to apply an
+              egress filter on the interface that connects a site to
+              its external ISP to drop outbound traffic that does not have a
+              valid internal source address.  Inbound, it might be desirable to
+              apply a filter that blocks all traffic from a site that is known
+              to forward or originate large amounts of junk mail.
+
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+  	   This allows flexibility in applying filters at the
+           place that makes the most sense.  It allows traffic judged to be
+	   invalid or malicious to be dropped as close to the source as 
+	   possible with the least impact on other traffic transiting the 
+	   interface(s) in question.
+	</t>
+	</list>
+	</t>
+	</section>
+
+	<section title="Select by Address, Protocol or Protocol Header Fields" anchor="Req.Filter_to_cap-9">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+
+              The device supports selection based on:
+
+<list style="symbols">
+<t>source IP address</t>
+<t>destination IP address</t>
+<t>source port</t>
+<t>destination port</t>
+<t>protocol ID</t>
+<t>TCP flags (SYN, ACK, RST)</t>
+<t>DiffServ Code Point (DSCP)</t>
+<t>the value(s) of any portion of the protocol headers for IP, ICMP, UDP
+   and TCP by specifying fields by name (e.g., "protocol = ICMP") rather than bit-
+   offset/length/numeric value (e.g., 72:8 = 1).</t>
+<t>Arbitrary header-based selection (possibly using bit-offset/length/value) of all other protocols.</t>
+</list>
+
+	</t>
+          <t hangText="Supported Practices.">
+            <list style="symbols">
+
+           <t>Security Practices for Device Management (<xref target="RFC4778" />, Section 2.2.2) </t>
+           <t>Security Practices for Data Path (<xref target="RFC4778" />, Section 2.3.2) </t>
+           <t>Security Practices for Software Upgrades and Configuration Integrity/Validation (<xref target="RFC4778" />, Section 2.5.2)</t>
+
+	      <t>Data Plane Filtering (<xref target="RFC4778" />, Section 2.7.1)</t>
+	      <t>Management Plane Filtering (<xref target="RFC4778" />, Section 2.7.2)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+              This capability implies that it is possible to filter based on
+              TCP or UDP port numbers, TCP flags such as SYN, ACK and RST bits,
+              and ICMP type and code fields.  One common example is to reject
+              "inbound" TCP connection attempts (TCP, SYN bit set+ACK bit clear
+              or SYN bit set+ACK,FIN and RST bits clear).  Another common
+              example is the ability to control what services are allowed in/out
+              of a network.  It may be desirable to only allow inbound
+              connections on port 80 (HTTP) and 443 (HTTPS) to a network hosting
+              web servers.
+	     <vspace blankLines="1" />
+	      Some denial of service attacks are based on the ability to
+	      flood the victim with ICMP traffic. One quick way to mitigate 
+	      the effects of such attacks is to drop all ICMP traffic headed 
+	      toward the victim. It should be noted (<xref target="RFC2923" />)
+	      that one possibly negative implication of filtering all ICMP
+	      traffic towards a victim is that legitimate functions which rely
+	      upon successful delivery of ICMP messages to the victim (e.g.,
+	      ICMP unreachables, Type-3 messages) will not be received by the
+	      victim.
+	     <vspace blankLines="1" />
+		Supporting arbitrary offset/length/value selection allows
+		filtering of unknown (possibly new) protocols, e.g. filtering
+		RTP even when the device itself does not support RTP.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+                The capability to filter on addresses, address blocks and protocols is a
+                fundamental tool for establishing boundaries between different
+                networks.
+	     <vspace blankLines="1" />
+		Being able to filter on portions of the header is necessary to
+         	allow implementation of policy, secure operations, and support
+		incident response.
+	</t>
+	</list>
+	</t>
+	</section>
+      </section>
+    <section title="Actions" anchor="Req.Actions">    
+	<section title="Specify Filter Actions" anchor="Req.Filtering_to_cap-4">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+The device provides a mechanism through which operators can specify
+a forwarding action to be taken when the selection criteria is met.
+Forwarding actions include the following:
+
+<list style="symbols">
+<t>permit (allow the datagram)</t>
+<t>discard (silently discard the datagram)</t>
+<t>reject (discard the datagram and send a notification to its originator)</t>
+</list>
+
+
+	</t>
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+		<t>Data Origin Authentication (<xref target="RFC4778" />, Section 2.3.3)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+
+	     <vspace blankLines="1" />
+  	    Assume that your management devices for deployed networking devices
+  	    live on several subnets, use several protocols, and are controlled by
+  	    several different parts of your organization. There might exist a reason
+  	    to have disparate policies for access to the devices from these parts of
+  	    the organization.
+	     <vspace blankLines="1" />
+  	    Actions such as "permit", "reject", and "drop" are essential in defining the 
+  	    security policy for the services offered by the network devices.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+               While silently dropping traffic without sending notification may
+               be the correct action in security terms, consideration should be
+               given to operational implications.  See <xref target="RFC3360"/> for
+               consideration of potential problems caused by sending
+               inappropriate TCP Resets, for instance.
+
+	     <vspace blankLines="1" />
+		Also note that it might be possible for an attacker to effect
+                a denial of service attack by causing too many rejection
+		notifications to be sent (e.g. via syslog messages).  For this reason
+		it might be desirable to rate-limit notifications.
+	
+	</t>
+	</list>
+	</t>
+	</section>
+	<section title="Specify Rate Limits" anchor="Req.Filtering_to_cap-4a">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+              The device provides a mechanism to allow the specification of
+              the action to be taken when a rate limiting filter matches. The actions include
+	      "transmit" (permit the traffic because it's below the specified limit),
+	      "limit" (limit traffic because it exceeds the specified limit). Limits
+	      should be applicable by both bits per second and packets per time-frame
+	      (possible time-frames might include second, minute, hour). Limits should
+	      able to be placed in both inbound and outbound directions.
+	</t>
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+
+	      <t>Denial of Service Tracking/Tracing with Rate Limiting
+
+ (<xref target="RFC4778" />, Section 2.8.4)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+  	    Assume that your management devices for deployed networking devices
+  	    live on several subnets, use several protocols, and are controlled by
+  	    several different parts of your organization. There might exist a reason
+  	    to have disparate policies for access to the devices from these parts of
+  	    the organization with respect to priority access to these services. Rate Limits 
+	    may be used to enforce these prioritizations.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+         	This capability allows a filter to be used to rate limit a portion
+		of traffic through or to a device. It maybe desirable to limit SNMP (UDP/161)
+		traffic to a device, but not deny it completely. Similarly, one might want to 
+	 	implement ICMP filters toward an external network instead of discarding all
+		ICMP traffic.
+
+	     <vspace blankLines="1" />
+               While silently dropping traffic without sending notification may
+               be the correct action in security terms, consideration should be
+               given to operational implications.  See <xref target="RFC3360"/> for
+               consideration of potential problems caused by sending
+               inappropriate TCP Resets, for instance.
+	</t>
+	</list>
+	</t>
+	</section>
+	<section title="Specify Log Actions" anchor="Req.Filtering_to_cap-5">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+              It is possible to log all filter actions.  The logging
+              capability is able to capture at least the following data:
+              <list style="symbols">
+		  <t>permit/reject/drop status</t>
+		  <t>source and destination IP address</t>
+		  <t>source and destination ports (if applicable to the protocol)</t>
+		  <t>which network element received or was sending the packet (interface, MAC
+                 address or other layer 2 information that identifies the
+                 previous hop source of the packet).</t>
+		</list>
+	      </t>
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+		<t>Logging Security Practices(<xref target="RFC4778" />, Section 2.6.2)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+  	    Actions such as "permit", "reject", "drop" are essential in defining the 
+  	    security policy for the services offered by the network devices. Auditing
+              the frequency, sources and destinations of these attempts is essential for
+              tracking ongoing issues today.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+  	    Logging can be burdensome to the network device, at no time should logging cause
+  	    performance degradation to the device or services offered on the device.
+	     <vspace blankLines="1" />
+             Also note logging itself can be rate limited so as to not cause
+             performance degradation of the device or the network(in case of syslog
+             or other similar network logging mechanism.
+	</t>
+	</list>
+	</t>
+	</section>
+	<section title="Specify Log Granularity" anchor="Req.Filtering_to_cap-6">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+
+            The device provides a mechanism through which operators can
+            enable/disable logging on a per rule basis.
+	</t>
+          <t hangText="Supported Practices.">
+            <list style="symbols">
+		<t>Logging Security Practices(<xref target="RFC4778" />, Section 2.6.2)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+              If a filter is defined that has several rules, and one of the
+  	    rules specifies an action that  denies telnet (tcp/23) connections,
+	    then it should be
+  	    possible to specify that only matches on the rule that denies
+  	    telnet should generate a log message.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+	        The ability to tune the granularity of logging allows the operator
+        	to log the information that is desired and only the information that
+		is desired.  Without this capability, it is possible that extra data
+		(or none at all) would be logged, making it more difficult to find
+		relevant information.
+	</t>
+	</list>
+	</t>
+	</section>
+	<section title="Ability to Display Filter Counters " anchor="Req.Filter_to_cap-12">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+    	    The device provides a mechanism to display filter counters.
+	</t>
+          <t hangText="Supported Practices.">
+            <list style="symbols">
+	      <t>Profile Current Traffic (<xref target="Ops.Profile"/>)</t>
+	      <t>Respond to Incidents Based on Accurate Data (<xref target="Ops.Respond" />)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+              Assume there is a router with four interfaces.  One is an up-link
+              to an ISP providing routes to the Internet.  The other three
+              connect to separate internal networks.  Assume that a host on one
+              of the internal networks has been compromised by a hacker and is
+              sending traffic with bogus source addresses.  In such a situation,
+              it might be desirable to apply ingress filters to each of the
+              internal interfaces.  Once the filters are in place, the counters
+              can be examined to determine the source (inbound interface) of the
+              bogus packets.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+  	    None.
+	</t>
+	</list>
+	</t>
+	</section>
+      </section>
+    <section title="Counters" anchor="Req.Counters">
+	<section title="Filter Counters Displayed Per Application" anchor="Req.Filter_to_cap-13">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+  	    If it is possible for a filter to be applied more than once at the
+              same time, then the device provides a mechanism to display
+              filter counters per filter application.
+	</t>
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+	      <t>Profile Current Traffic (<xref target="Ops.Profile"/>)</t>
+	      <t>Respond to Incidents Based on Accurate Data (<xref target="Ops.Respond" />)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+  	    One way to implement this capability would be to have the counter
+              display mechanism show the interface (or other entity) to which
+              the filter has been applied, along with the name (or other
+              designator) for the filter.  For example if a filter named
+              "desktop_outbound" is applied to two different interfaces, say,
+              "ethernet0" and "ethernet1", the display should indicate something
+              like "matches of filter 'desktop_outbound' on ethernet0 ..." and
+              "matches of filter 'desktop_outbound' on ethernet1 ..."
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+  	 	It may make sense to apply the same filter definition
+	         simultaneously more than one time (to different interfaces, etc.).
+	         If so, it would be much more useful to know which instance of a
+	         filter is matching than to know that some instance was matching
+         	somewhere.
+	</t>
+	</list>
+	</t>
+	</section>
+	<section title="Ability to Reset Filter Counters" anchor="Req.Filter_to_cap-14">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+  	   It is possible to reset individual counters to zero.
+	</t>
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+	      <t>Profile Current Traffic (<xref target="Ops.Profile"/>)</t>
+	      <t>Respond to Incidents Based on Accurate Data (<xref target="Ops.Respond" />)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+             For the purposes of this capability it would be acceptable for
+             the system to maintain two counters: an "absolute counter",
+             C[now], and a "reset" counter, C[reset].  The absolute counter
+             would maintain counts that increase monotonically until they wrap
+             or overflow the counter.  The reset counter would receive a copy
+             of the current value of the absolute counter when the reset
+             function was issued for that counter.  Functions that display or
+             retrieve the counter could then display the delta (C[now] -
+             C[reset]).
+
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+              Assume that filter counters are being used to detect internal
+              hosts that are infected with a new worm.  Once it is believed that
+              all infected hosts have been cleaned up and the worm removed, the
+              next step would be to verify that.  One way of doing so would be
+              to reset the filter counters to zero and see if traffic indicative
+              of the worm has ceased.
+	</t>
+	</list>
+	</t>
+	</section>
+	      <!-- End Here -->
+	<section title="Filter Hits are Counted" anchor="Req.Filter_to_cap-11">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+             The device supplies a facility for counting all filter matches.
+	</t>
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+	      <t>Profile Current Traffic (<xref target="Ops.Profile"/>)</t>
+	      <t>Respond to Incidents Based on Accurate Data (<xref target="Ops.Respond" />)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+              Assume, for example, that a ISP network implements anti-spoofing
+              egress filters (see <xref target="RFC2827"/>) on interfaces of its edge routers
+              that support single-homed stub networks.  Counters could enable
+              the ISP to detect cases where large numbers of spoofed packets are
+              being sent.  This may indicate that the customer is performing
+              potentially malicious actions (possibly in violation of the ISPs
+              Acceptable Use Policy), or that system(s) on the customers network
+              have been "owned" by hackers and are being (mis)used to launch
+              attacks.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+  	    None.
+	</t>
+	</list>
+	</t>
+	</section>
+	<section title="Filter Counters are Accurate " anchor="Req.Filter_to_cap-15">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+  	    Filter counters are accurate.  They reflect the actual
+              number of matching packets since the last counter reset.  Filter
+              counters are be capable of holding up to 2^32 - 1 values without
+              overflowing and should be capable of holding up to 2^64 - 1
+              values.
+	</t>
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+	      <t>Respond to Incidents Based on Accurate Data (<xref target="Ops.Respond" />)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+              If N packets matching a filter are sent to/through a device, then
+              the counter should show N matches.
+	</t>
+          <t hangText="Considerations.">
+	     <vspace blankLines="1" />
+  	    None.
+	</t>
+	</list>
+	</t>
+	</section>
+	
+	<!-- BOTTOM -->
+	
+	<!-- TOP -->
+      </section>
+
+	<section title="Minimal Performance Degradation" anchor="Req.Filtering_to_cap-3">
+	  <t>
+        <list style="hanging">
+	      <t hangText="Capability.">
+	     <vspace blankLines="1" />
+  	    The device provides a means to filter packets without
+  	    significant performance degradation.  This specifically applies to
+  	    stateless packet filtering operating on layer 3 (IP) and layer 4
+  	    (TCP or UDP) headers, as well as normal packet forwarding
+  	    information such as incoming and outgoing interfaces.
+
+	     <vspace blankLines="1" />
+  	    The device is able to apply stateless packet filters on ALL
+  	    interfaces (up to the total number of interfaces attached to the device)
+            simultaneously and
+  	    with multiple filters per interface (e.g., inbound and outbound).
+	</t>
+          <t hangText="Supported Practices.">
+              <list style="symbols">
+	      <t>Implement Filters Where Necessary (<xref target="Ops.MinimalDegradation" />)</t>
+	    </list>
+	</t>
+          <t hangText="Current Implementations.">
+	     <vspace blankLines="1" />
+  	    Another way of stating the capability is that filter performance
+              should not be the limiting factor in device throughput.  If a
+              device is capable of forwarding 30Mb/sec without filtering, then
+              it should be able to forward the same amount with filtering in
+              place.
+              
+	</t>
+          <t hangText="Considerations.">
+
+              <vspace blankLines="1" />
+              The definition of "significant" is subjective.  At one end of the
+              spectrum it might mean "the application of filters may cause the
+              box to crash".  At the other end would be a throughput loss of
+              less than one percent with tens of thousands of filters applied.
+              The level of performance degradation that is acceptable will have
+              to be determined by the operator.
+
+	  <vspace blankLines="1" />
+              Repeatable test data showing filter performance impact would be
+              very useful in evaluating this capability.
+              Tests should include such information as packet size, packet rate,
+              number of interfaces tested (source/destination), types of
+              interfaces, routing table size, routing protocols in use,
+              frequency of routing updates, etc.
+	  <vspace blanklines="1" />
+              This capability does not address stateful filtering, filtering
+              above layer 4 headers or other more advanced types of filtering
+              that may be important in certain operational environments.
+              
+      
+          <vspace blanklines="1" />
+		Finally, if key infrastructure devices crash or experience severe
+	        performance degradation when filtering under
+		heavy load, or even have the reputation of doing so, it is likely that
+		security personnel will be forbidden, by policy, from using filtering
+		in ways that would otherwise be appropriate for fear that it might
+		cause unnecessary service disruption.
+      
+	</t>
+	</list>
+	</t>
+	</section>
+      
+    <!-- END MANAGEMENT PLANE -->
+    <!-- BOTTOM -->
+    
+    <!-- TOP -->
+    
+    <section title="Additional Operational Practices">
+    <!-- Internal References -->
+      
+      <t>
+This section describes practices not covered in <xref target="RFC4778"/>.
+They are included here to provide justification for capabilities that
+reference them.
+</t>
+      
+      
+      <section title="Profile Current Traffic" anchor="Ops.Profile">
+	<t>This capability allows a network operator to monitor traffic across an
+	active interface in the network at a minimal level. This helps to determine 
+	probable cause for interface or network problems.</t>
+
+	<t>The ability to separate and distinguish traffic at a layer-3 or 
+	layer-4 level allows the operator to characterize beyond simple interface
+	counters the traffic in question. This is critical because often the 
+	operator has no tools available for protocol analysis aside from
+	interface filters.</t>
+      </section>
+      
+      <section title="Block Malicious Packets" anchor="Ops.BlockPackets">
+	<t>Blocking or limiting traffic deemed to be malicious is a key
+	component of application of any security policy's implementation. Clearly
+	it is critical to be able to implement a security policy on a network.</t>
+
+	<t>Malicious packets could potentially be defined by any part of,
+	atleast, the layer-3 or layer-4 headers of the IP packet. The ability
+	to classify or select traffic based on these criteria and take some 
+	action based on that classification is critical to operations of a
+	network.</t>
+      </section>
+      
+      <section title="Limit Sources of Management" anchor="Ops.LimitMgt">
+	<t>Management of a network should be limited to only trusted hosts. This
+	implies that the network elements will be able to limit access to management
+	functions to these trusted hosts.</t>
+
+	<t>Currently operators will limit access to the management functions on a network device
+	to only the hosts that are trusted to perform that function. This allows separation
+	of critical functions and protection of those functions on the network devices.</t>
+      </section>
+
+      <section title="Respond to Incidents Based on Accurate Data" anchor="Ops.Respond">
+  	 <t>Accurate counting of filter matches is important because it
+         shows the frequency of attempts to violate policy.  
+         Inaccurate data can not be relied on as the basis for action.
+         Under-reported data can conceal the magnitude of a problem.
+         This enables
+         resources to be focused on areas of greatest need.</t>
+      </section>
+
+      <section title="Implement Filters Where Necessary" anchor="Ops.MinimalDegradation">
+                <t>This enables the implementation of filters on whichever services are
+                necessary.  To the extent that filtering causes degradation, it may
+  	      not be possible to apply filters that implement the appropriate
+  	      policies.</t>
+      </section>
+
+    </section>
+    
+    <section title="Security Considerations">
+      
+      <list style="hanging">
+	
+	<t hangText="General">
+          <vspace blanklines="1" />
+Security is the subject matter of this entire memo.
+The capabilities listed cite practices in <xref target="RFC4778"/> that they are
+intended to support.  <xref target="RFC4778"/> defines the threat model,
+practices and lists justifications for each practice.
+      </t>
+	
+      </list>
+      
+    </section>
+
+    <section title="IANA Considerations">
+   <t>This document has no actions for IANA.</t>
+   </section>
+    
+    
+  </middle>
+  
+  <back>
+
+    <references title='NormativeReferences'>
+      <?rfc include='bibxml/reference.RFC.2828.xml'?>
+    </references>
+    
+    <references title='Informational References'>
+      
+      <?rfc include='bibxml/reference.RFC.2827.xml'?>
+      <?rfc include='bibxml/reference.RFC.2923.xml'?>
+      <?rfc include='bibxml/reference.RFC.3360.xml'?>
+      <?rfc include='bibxml/reference.RFC.3871.xml'?>
+      <?rfc include='bibxml/reference.RFC.4778.xml'?>
+      <?rfc include='bibxml3/reference.I-D.lewis-infrastructure-security.xml'?>
+      <?rfc include='bibxml3/reference.I-D.savola-rtgwg-backbone-attacks.xml'?>
+      
+      <!-- end reference -->
+      
+    </references>
+    
+    
+    <section title="Acknowledgments">
+      <t>The authors gratefully acknowledge the contributions of:</t>
+      <list style="symbols">
+          <vspace blanklines="1" />
+
+        <t>Merike Kaeo for help aligning these capabilities with supported practices</t>
+
+<!--	<t>The MITRE Corporation for supporting development of this
+document.  NOTE: The editor's affiliation with The MITRE Corporation
+is provided for identification purposes only, and is not intended to
+convey or imply MITRE's concurrence with, or support for, the
+positions, opinions or viewpoints expressed by the editor.</t>
+-->
+      </list>
+      
+    </section>
+  </back>
+</rfc>
+
+<!--
+
+$Log: draft-ietf-opsec-filter-caps-08.xml,v $
+Revision 1.5  2007/07/05 19:15:33  morrowc
+updated 'last-update' date and bumped rev
+
+Revision 1.4  2007/07/04 15:58:20  morrowc
+added the normative reference for 2923
+
+Revision 1.3  2007/07/04 15:56:18  morrowc
+cleaned up some line breaks, did some nits/non-nits for mallman@icir.org gen-art.
+
+Revision 1.2  2007/07/04 14:44:20  morrowc
+added the correction/text-cleanup from Danny@tcb.net (icmp filtering isn't 'all icmp')
+
+Revision 1.1  2007/07/03 14:43:37  morrowc
+Initial revision
+
+Revision 1.2  2006/09/16 14:11:45  morrowc
+updated version properly
+
+Revision 1.1  2006/09/13 21:52:43  morrowc
+Initial revision
+
+Revision 1.4  2006/09/11 19:05:17  gjones
+Added references from Merike.
+
+Revision 1.3  2006/09/05 17:36:57  gjones
+minor typos.
+
+Revision 1.2  2006/09/01 15:16:34  gjones
+much hacking.   Mostly to the supported practices.
+
+Revision 1.2  2006/08/26 17:47:36  gjones
+fixed existing doc to work with xml2rfc1.31
+
+Revision 1.1  2006/07/15 12:26:52  gjones
+Initial revision
+
+Revision 1.12  2006/07/15 03:16:17  morrowc
+added capabilty support functions infos.
+
+Revision 1.11  2006/07/15 02:25:43  morrowc
+fixed more syntax errors
+
+Revision 1.10  2006/07/15 02:23:33  morrowc
+fixed syntax error
+
+Revision 1.9  2006/07/15 02:22:21  morrowc
+Added final bits to the apabilities
+
+Revision 1.8  2006/07/13 20:03:43  morrowc
+Added more capabilities stuff and edited docs.
+
+Revision 1.7  2006/07/13 18:21:30  morrowc
+omre additions
+
+Revision 1.6  2006/07/13 16:20:09  morrowc
+fixing sections and wording for secstions.
+taking a short break
+
+Revision 1.5  2006/07/12 22:07:12  gjones
+minor fixes.  spelling.
+
+Revision 1.4  2006/07/12 20:58:32  gjones
+fixed formatting.
+
+Revision 1.2  2006/07/12 19:22:28  george
+restructured.
+
+Revision 1.1  2006/07/12 13:13:20  george
+Initial revision
+
+Revision 1.2  2005/10/15 16:58:40  morrowc
+Fixed title
+
+Revision 1.1  2005/10/15 16:58:01  morrowc
+Initial revision
+
+Revision 1.1  2005/10/15 16:47:28  morrowc
+Initial revision
+
+
+-->
