@@ -1087,7 +1087,6 @@ practices and lists justifications for each practice.
       <?rfc include='bibxml/reference.RFC.3360.xml'?>
       <?rfc include='bibxml/reference.RFC.3871.xml'?>
       <?rfc include='bibxml/reference.RFC.4778.xml'?>
-      <?rfc include='bibxml3/reference.I-D.lewis-infrastructure-security.xml'?>
       <?rfc include='bibxml3/reference.I-D.savola-rtgwg-backbone-attacks.xml'?>
       
       <!-- end reference -->
